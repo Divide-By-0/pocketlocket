@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="stripe-config.js"></script>
   <style>
     :root {
       --blush: #FFE4E6;
@@ -1132,6 +1134,48 @@
       font-size: 1.05rem;
     }
 
+    .shopify-btn-container {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .shopify-btn-container .btn-primary {
+      flex: 1;
+    }
+
+    .btn-full-price {
+      flex: 1;
+      padding: 1.1rem 2rem;
+      border-radius: 100px;
+      font-size: 1.05rem;
+      font-weight: 500;
+      background: #e5e5e5;
+      color: #9ca3af;
+      border: none;
+      cursor: not-allowed;
+      transition: none;
+      font-family: inherit;
+      text-align: center;
+    }
+
+    .btn-full-price:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .price-strike {
+      text-decoration: line-through;
+      opacity: 0.6;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 768px) {
+      .shopify-btn-container {
+        flex-direction: column;
+      }
+    }
+
     .trust-badges {
       display: flex;
       gap: 1.5rem;
@@ -1475,7 +1519,7 @@
       <a href="#how">How it Works</a>
       <a href="#features">Features</a>
       <a href="#product">Shop</a>
-      <a href="#product" class="btn-order">Buy Now</a>
+      <a href="#product" class="btn-order">Reserve for $1</a>
     </div>
   </nav>
 
@@ -1486,7 +1530,7 @@
       <p class="hero-text">Take a photo with your phone. Tap send. Watch it appear instantly on the e-ink display on the back of your partner's phone case. A little window to your world, right in their pocket.</p>
       <div class="hero-cta">
         <a href="#product" class="btn-primary">
-          Shop Now — $79
+          Reserve Your Spot — $1
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
         <a href="#how" class="btn-secondary">
@@ -1662,9 +1706,17 @@
       </div>
 
       <div class="product-details">
-        <span class="section-label">The original</span>
+        <span class="section-label">Pre-Order Now</span>
         <h2>PocketLocket Case</h2>
-        <div class="product-price">$79 <span>+ free shipping</span></div>
+        <div class="product-price">
+          Reserve for $1
+          <span style="display: block; font-size: 0.85rem; margin-top: 0.5rem; color: var(--warm-gray);">
+            Release Date: February 7, 2026
+          </span>
+          <span style="display: block; font-size: 0.9rem; margin-top: 0.25rem; color: var(--deep-rose); font-weight: 600;">
+            Retail Price: $69.99
+          </span>
+        </div>
 
         <ul class="product-features">
           <li>E-ink display on the back of your case</li>
@@ -1702,7 +1754,7 @@
               placeholder="Enter your phone model (e.g., Samsung S25 Ultra, Pixel 9)"
               required
               maxlength="100"
-              pattern="[a-zA-Z0-9\s\-\+]+"
+              pattern="^[a-zA-Z0-9\s\-\+\.\/\(\)]+$"
               title="Please enter a valid phone model name"
             />
             <button type="submit">Request</button>
@@ -1720,18 +1772,21 @@
         </div>
 
         <div class="shopify-btn-container" id="shopify-buy-button">
-          <button class="btn-primary btn-buy">
-            Add to Cart — $79
+          <button class="btn-primary btn-buy" id="reserve-button" aria-label="Reserve your PocketLocket case for $1">
+            Reserve Your Spot — $1
+          </button>
+          <button class="btn-full-price" disabled aria-label="Full purchase coming soon for $69.99" aria-disabled="true">
+            Buy Now - $69.99<br><span style="font-size: 0.75em;">Coming Soon</span>
           </button>
         </div>
 
         <div class="trust-badges">
-          <span>🔒 Secure checkout</span>
-          <span>🚚 Ships in 2-3 weeks</span>
-          <span>↩️ Easy returns</span>
+          <span>🔒 Secure checkout via Stripe</span>
+          <span>📅 Ships February 7, 2026</span>
+          <span>💰 Pay $69.99 on release</span>
         </div>
         <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--warm-gray);">
-          Note: Orders placed now will not arrive by February 14th.
+          Reserve your PocketLocket for just $1 today. On February 7th, we will open up full purchases for cases and start shipping. The $1 reservation price will be subtracted from the $69.99 retail price. Secure your spot now!
         </p>
       </div>
     </div>
@@ -1750,7 +1805,7 @@
           <div class="author-avatar">👩</div>
           <div class="author-info">
             <strong>Sarah M.</strong>
-            <span>Verified Buyer</span>
+            <span>Verified girlfriend</span>
           </div>
         </div>
       </div>
@@ -1761,7 +1816,7 @@
           <div class="author-avatar">👨</div>
           <div class="author-info">
             <strong>Mike T.</strong>
-            <span>Verified Buyer</span>
+            <span>Verified friend</span>
           </div>
         </div>
       </div>
@@ -1772,7 +1827,7 @@
           <div class="author-avatar">👩</div>
           <div class="author-info">
             <strong>Emily R.</strong>
-            <span>Verified Buyer</span>
+            <span>Verified girlfriend</span>
           </div>
         </div>
       </div>
@@ -1781,10 +1836,10 @@
 
   <section class="cta">
     <div class="cta-content">
-      <span class="section-label">Valentine's Day is coming ♥</span>
-      <h2>Make this year unforgettable</h2>
-      <p>Order now and get it in time for February 14th. Give the gift of presence—even when you're apart.</p>
-      <a href="#product" class="btn-primary">Shop Now →</a>
+      <span class="section-label">Limited Time Offer ♥</span>
+      <h2>Reserve Your PocketLocket Today</h2>
+      <p>Secure your spot for just $1. Releasing February 7th at the discounted price of $69.99. Don't miss out on this special offer!</p>
+      <a href="#product" class="btn-primary">Reserve Now →</a>
     </div>
   </section>
 
@@ -1847,50 +1902,67 @@
     const sendLabel = document.querySelector('.send-label');
     const einkRefresh = document.querySelector('.eink-refresh');
 
+    // Animation timing constants
+    const ANIMATION_TIMINGS = {
+      initialDelay: 2000,
+      flashDuration: 300,
+      sendDelay: 350,
+      arrowAnimation: 600,
+      einkDelay: 500,
+      einkRefreshDelay: 250,
+      einkRemoveDelay: 400,
+      photoWait: 2500,
+      cycleDelay: 800
+    };
+
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    let animationRunning = true;
 
     async function runCycle() {
-      while (true) {
-        // Step 1: Photo is showing in viewfinder (already visible)
-        await delay(2000);
+      // Step 1: Photo is showing in viewfinder (already visible)
+      await delay(ANIMATION_TIMINGS.initialDelay);
 
-        // Step 2: Snap the photo
-        flashOverlay.classList.add('flash');
-        shutterBtn.classList.add('pressed');
-        await delay(300);
-        flashOverlay.classList.remove('flash');
-        shutterBtn.classList.remove('pressed');
+      // Step 2: Snap the photo
+      flashOverlay.classList.add('flash');
+      shutterBtn.classList.add('pressed');
+      await delay(ANIMATION_TIMINGS.flashDuration);
+      flashOverlay.classList.remove('flash');
+      shutterBtn.classList.remove('pressed');
 
-        // Step 3: Show "Sending..." and animate arrow
-        await delay(350);
-        sendLabel.classList.add('visible');
-        arrowDot.classList.add('animating');
-        await delay(600);
-        arrowDot.classList.remove('animating');
+      // Step 3: Show "Sending..." and animate arrow
+      await delay(ANIMATION_TIMINGS.sendDelay);
+      sendLabel.classList.add('visible');
+      arrowDot.classList.add('animating');
+      await delay(ANIMATION_TIMINGS.arrowAnimation);
+      arrowDot.classList.remove('animating');
 
-        // Step 4: E-ink refresh and update
-        await delay(500);
-        placeholder.classList.remove('active');
-        einkRefresh.classList.add('animating');
+      // Step 4: E-ink refresh and update
+      await delay(ANIMATION_TIMINGS.einkDelay);
+      placeholder.classList.remove('active');
+      einkRefresh.classList.add('animating');
 
-        await delay(250);
-        einkPhotos.forEach((photo, i) => {
-          photo.classList.toggle('active', i === currentIndex);
-        });
+      await delay(ANIMATION_TIMINGS.einkRefreshDelay);
+      einkPhotos.forEach((photo, i) => {
+        photo.classList.toggle('active', i === currentIndex);
+      });
 
-        await delay(400);
-        einkRefresh.classList.remove('animating');
-        sendLabel.classList.remove('visible');
+      await delay(ANIMATION_TIMINGS.einkRemoveDelay);
+      einkRefresh.classList.remove('animating');
+      sendLabel.classList.remove('visible');
 
-        // Step 5: Wait, then move to next photo
-        await delay(2500);
-        currentIndex = (currentIndex + 1) % totalPhotos;
-        photoContents.forEach((content, i) => {
-          content.classList.toggle('active', i === currentIndex);
-        });
+      // Step 5: Wait, then move to next photo
+      await delay(ANIMATION_TIMINGS.photoWait);
+      currentIndex = (currentIndex + 1) % totalPhotos;
+      photoContents.forEach((content, i) => {
+        content.classList.toggle('active', i === currentIndex);
+      });
 
-        // Wait before next cycle
-        await delay(800);
+      // Wait before next cycle
+      await delay(ANIMATION_TIMINGS.cycleDelay);
+
+      // Continue animation if still running
+      if (animationRunning) {
+        runCycle();
       }
     }
 
@@ -1914,19 +1986,16 @@
     const formContainer = document.getElementById('phone-request-form-container');
 
     if (toggleButton && formContainer) {
-      // Store original text
-      const originalText = toggleButton.textContent;
+      const closedText = "Don't see your model?";
+      const openText = 'Close';
 
       toggleButton.addEventListener('click', function() {
         const isOpen = formContainer.classList.contains('show');
         formContainer.classList.toggle('show');
         this.classList.toggle('open');
 
-        // Update button text (arrow is in ::after pseudo-element)
-        const textContent = this.textContent;
-        // Remove arrow if present in text, then set new text
-        const cleanText = textContent.replace('→', '').trim();
-        this.textContent = isOpen ? originalText : 'Close';
+        // Update button text (arrow is styled via ::after pseudo-element)
+        this.textContent = isOpen ? closedText : openText;
       });
     }
 
@@ -1935,6 +2004,16 @@
     const successMessage = document.getElementById('request-success');
 
     if (phoneRequestForm && successMessage) {
+      // Form validation constants
+      const MAX_PHONE_MODEL_LENGTH = 100;
+      const MIN_PHONE_MODEL_LENGTH = 2;
+      const PHONE_MODEL_PATTERN = /^[a-zA-Z0-9\s\-\+\.\/\(\)]+$/;
+      const MESSAGE_COLORS = {
+        success: '#059669',
+        error: '#dc2626'
+      };
+      const MESSAGE_TIMEOUT = 5000;
+
       phoneRequestForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -1946,34 +2025,258 @@
 
           const phoneModel = input.value.trim();
 
-          // Validate input
-          if (!phoneModel || phoneModel.length > 100) {
-            successMessage.textContent = 'Please enter a valid phone model.';
-            successMessage.style.color = '#dc2626';
+          // Validate input length
+          if (!phoneModel || phoneModel.length < MIN_PHONE_MODEL_LENGTH) {
+            successMessage.textContent = 'Please enter a phone model name.';
+            successMessage.style.color = MESSAGE_COLORS.error;
+            successMessage.classList.add('show');
+            return;
+          }
+
+          if (phoneModel.length > MAX_PHONE_MODEL_LENGTH) {
+            successMessage.textContent = `Phone model name is too long (max ${MAX_PHONE_MODEL_LENGTH} characters).`;
+            successMessage.style.color = MESSAGE_COLORS.error;
+            successMessage.classList.add('show');
+            return;
+          }
+
+          // Validate input pattern
+          if (!PHONE_MODEL_PATTERN.test(phoneModel)) {
+            successMessage.textContent = 'Please use only letters, numbers, and common punctuation.';
+            successMessage.style.color = MESSAGE_COLORS.error;
             successMessage.classList.add('show');
             return;
           }
 
           // Display success message (textContent is already safe from XSS)
           successMessage.textContent = `Thanks! We'll consider adding ${phoneModel}.`;
-          successMessage.style.color = '#059669';
+          successMessage.style.color = MESSAGE_COLORS.success;
           successMessage.classList.add('show');
 
           // Reset form
           this.reset();
 
-          // Hide message after 5 seconds
+          // Hide message after timeout
           setTimeout(() => {
             successMessage.classList.remove('show');
-          }, 5000);
+          }, MESSAGE_TIMEOUT);
         } catch (error) {
           console.error('Form submission error:', error);
           successMessage.textContent = 'Something went wrong. Please try again.';
-          successMessage.style.color = '#dc2626';
+          successMessage.style.color = MESSAGE_COLORS.error;
           successMessage.classList.add('show');
         }
       });
     }
+
+    // Payment Configuration Constants
+    const PAYMENT_CONSTANTS = {
+      RESERVATION_AMOUNT: 100, // $1.00 in cents
+      DEFAULT_PHONE_MODEL: 'iPhone 15',
+      DEFAULT_COLOR: 'White',
+      ERROR_DISPLAY_DURATION: 5000,
+      FETCH_TIMEOUT: 30000,
+      CHECKOUT_ENDPOINT: '/create-checkout-session'
+    };
+
+    // Error messages
+    const ERROR_MESSAGES = {
+      NO_CONFIG: 'Payment system is not configured. Please contact support.',
+      INVALID_CONFIG: 'Payment system is not fully configured. Please contact support.',
+      PAYMENT_FAILED: 'Unable to process payment. Please try again.',
+      NETWORK_ERROR: 'Network error. Please check your connection and try again.',
+      SERVER_ERROR: 'Server error. Please try again later.'
+    };
+
+    // Stripe Payment Integration
+    let stripe = null;
+    let isProcessing = false;
+
+    // Initialize Stripe from external config
+    function initializeStripe() {
+      if (typeof window.STRIPE_CONFIG === 'undefined') {
+        console.error('Stripe config not loaded. Make sure stripe-config.js exists.');
+        return false;
+      }
+
+      if (typeof Stripe === 'undefined') {
+        console.error('Stripe.js not loaded');
+        return false;
+      }
+
+      const config = window.STRIPE_CONFIG;
+      if (!config.publishableKey || !config.publishableKey.startsWith('pk_')) {
+        console.error('Invalid Stripe publishable key');
+        return false;
+      }
+
+      try {
+        stripe = Stripe(config.publishableKey);
+        return true;
+      } catch (error) {
+        console.error('Failed to initialize Stripe:', error);
+        return false;
+      }
+    }
+
+    // Validate configuration
+    function validateConfig() {
+      if (!stripe) {
+        return ERROR_MESSAGES.NO_CONFIG;
+      }
+
+      const config = window.STRIPE_CONFIG;
+      if (!config.backendUrl || config.backendUrl === 'https://your-actual-backend.com') {
+        return ERROR_MESSAGES.INVALID_CONFIG;
+      }
+
+      return null;
+    }
+
+    // Get selected variant values
+    function getSelectedVariants() {
+      const variantSelectors = document.querySelectorAll('.variant-selector');
+      const variants = {
+        phoneModel: PAYMENT_CONSTANTS.DEFAULT_PHONE_MODEL,
+        color: PAYMENT_CONSTANTS.DEFAULT_COLOR
+      };
+
+      variantSelectors.forEach(selector => {
+        const label = selector.querySelector('.variant-label');
+        const activeBtn = selector.querySelector('.variant-btn.active');
+
+        if (label && activeBtn) {
+          const labelText = label.textContent.toLowerCase();
+          if (labelText.includes('phone model')) {
+            variants.phoneModel = activeBtn.textContent.trim();
+          } else if (labelText.includes('color')) {
+            variants.color = activeBtn.textContent.trim();
+          }
+        }
+      });
+
+      return variants;
+    }
+
+    // Create checkout session with timeout
+    async function createCheckoutSession(phoneModel, color) {
+      const config = window.STRIPE_CONFIG;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), PAYMENT_CONSTANTS.FETCH_TIMEOUT);
+
+      try {
+        const response = await fetch(`${config.backendUrl}${PAYMENT_CONSTANTS.CHECKOUT_ENDPOINT}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            phoneModel,
+            color,
+            amount: PAYMENT_CONSTANTS.RESERVATION_AMOUNT,
+          }),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || ERROR_MESSAGES.SERVER_ERROR);
+        }
+
+        const session = await response.json();
+
+        if (!session?.id) {
+          throw new Error('Invalid session response from server');
+        }
+
+        return session;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          throw new Error('Request timeout. Please try again.');
+        }
+        throw error;
+      }
+    }
+
+    // Handle reserve button click
+    async function handleReserveClick() {
+      if (isProcessing) return;
+
+      const configError = validateConfig();
+      if (configError) {
+        showError(configError);
+        return;
+      }
+
+      const variants = getSelectedVariants();
+      const button = this;
+
+      isProcessing = true;
+      button.disabled = true;
+      const originalText = button.textContent;
+      button.textContent = 'Processing...';
+      button.setAttribute('aria-busy', 'true');
+
+      try {
+        const session = await createCheckoutSession(variants.phoneModel, variants.color);
+
+        const result = await stripe.redirectToCheckout({
+          sessionId: session.id,
+        });
+
+        if (result.error) {
+          throw new Error(result.error.message);
+        }
+      } catch (error) {
+        console.error('Payment error:', error);
+        const errorMessage = error.message || ERROR_MESSAGES.PAYMENT_FAILED;
+        showError(errorMessage);
+      } finally {
+        isProcessing = false;
+        button.disabled = false;
+        button.textContent = originalText;
+        button.removeAttribute('aria-busy');
+      }
+    }
+
+    // Helper function to show errors (prevents duplicate error messages)
+    let currentErrorDiv = null;
+    function showError(message) {
+      // Remove existing error if any
+      if (currentErrorDiv && currentErrorDiv.parentNode) {
+        currentErrorDiv.remove();
+      }
+
+      const errorDiv = document.createElement('div');
+      errorDiv.setAttribute('role', 'alert');
+      errorDiv.setAttribute('aria-live', 'assertive');
+      errorDiv.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #dc2626; color: white; padding: 1rem 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10000; max-width: 90%; text-align: center;';
+      errorDiv.textContent = message;
+      document.body.appendChild(errorDiv);
+      currentErrorDiv = errorDiv;
+
+      setTimeout(() => {
+        if (errorDiv.parentNode) {
+          errorDiv.remove();
+        }
+        if (currentErrorDiv === errorDiv) {
+          currentErrorDiv = null;
+        }
+      }, PAYMENT_CONSTANTS.ERROR_DISPLAY_DURATION);
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeStripe();
+
+      const reserveButton = document.getElementById('reserve-button');
+      if (reserveButton) {
+        reserveButton.addEventListener('click', handleReserveClick);
+      }
+    });
   </script>
 </body>
 </html>
