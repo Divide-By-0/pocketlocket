@@ -17,7 +17,7 @@ pocketlocket/
 ├── index.html                    # Main landing page
 ├── stripe-config.js              # Stripe configuration (gitignored, create from example)
 ├── stripe-config.example.js      # Template for Stripe config
-├── stripe-backend-example.js     # Example Node.js backend
+├── server.js                     # Production Node.js backend
 ├── .env                          # Backend environment variables (gitignored, create from example)
 ├── .env.example                  # Template for environment variables
 ├── .gitignore                    # Git ignore rules
@@ -58,7 +58,7 @@ npm install
 ### 5. Run Backend Server
 
 ```bash
-node stripe-backend-example.js
+node server.js
 ```
 
 ### 6. Open Frontend
@@ -113,7 +113,7 @@ Contains the Stripe publishable key and backend URL. This file:
 ### .env (Backend)
 
 Contains sensitive backend configuration. This file:
-- Is loaded by `stripe-backend-example.js`
+- Is loaded by `server.js`
 - Should contain your actual secret key
 - Is in `.gitignore` to prevent accidental commits
 - Use `.env.example` as template
@@ -129,7 +129,7 @@ Contains sensitive backend configuration. This file:
 
 ### Backend (Heroku, Railway, Render)
 
-1. Deploy `stripe-backend-example.js`
+1. Deploy `server.js`
 2. Set environment variables in your hosting dashboard:
    - `STRIPE_SECRET_KEY` = your live secret key
    - `DOMAIN` = your frontend URL

@@ -46,7 +46,7 @@ For production, use your live key (`pk_live_...`) and production backend URL.
 
 ### 3. Set Up Backend Server
 
-The file `stripe-backend-example.js` contains a complete Node.js/Express backend example.
+The file `server.js` contains a complete Node.js/Express backend example.
 
 #### Install Dependencies
 
@@ -76,7 +76,7 @@ PORT=3000
 #### Run the Server
 
 ```bash
-node stripe-backend-example.js
+node server.js
 ```
 
 ### 4. Test the Integration
