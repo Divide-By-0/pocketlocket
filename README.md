@@ -63,15 +63,13 @@ node server.js
 
 ### 6. Open Frontend
 
-Open `index.html` in your browser or serve it with a local server:
+Open your browser to:
 
-```bash
-# Using Python 3
-python -m http.server 8000
-
-# Using Node.js http-server
-npx http-server
 ```
+http://localhost:3000
+```
+
+The server (`server.js`) serves both the API and the static files (`index.html`).
 
 ## Security Notes
 

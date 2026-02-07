@@ -19,19 +19,31 @@ app.use(express.json());
 // Serve stripe-config.js dynamically based on environment variables
 app.get('/stripe-config.js', (req, res) => {
   res.type('application/javascript');
+  // Prevent caching to ensure updates to env vars are reflected immediately
+  res.setHeader('Cache-Control', 'no-store');
+  // We leave backendUrl empty so the frontend makes relative requests
+  // This avoids CORS issues and URL configuration errors
   res.send(`
     window.STRIPE_CONFIG = {
       publishableKey: '${process.env.STRIPE_PUBLISHABLE_KEY || ""}',
-      backendUrl: '${process.env.DOMAIN || ""}'
+      backendUrl: ''
     };
   `);
 });
+
+// Helper to ensure domain has protocol for Stripe redirects
+const getDomain = () => {
+  const domain = process.env.DOMAIN;
+  if (!domain) return `http://localhost:${process.env.PORT || 3000}`;
+  if (domain.startsWith('http://') || domain.startsWith('https://')) return domain;
+  return `https://${domain}`;
+};
 
 // Create checkout session endpoint
 app.post('/create-checkout-session', async (req, res) => {
   try {
     const { phoneModel, color, amount } = req.body;
-    const domain = process.env.DOMAIN || `http://localhost:${process.env.PORT || 3000}`;
+    const domain = getDomain();
 
     // Create a Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
